@@ -1,8 +1,8 @@
 {
   "name": "scroll-poc",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Quasar App",
+  "description": "scroll-poc",
+  "productName": "scroll-poc",
   "author": "Josh Mellicker",
   "private": true,
   "scripts": {
