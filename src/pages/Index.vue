@@ -5,7 +5,7 @@
     @keydown.prevent.40="downSpeed"
   >
     <div class="row full-width q-col-gutter-md justify-center">
-      here is the text we want to scroll
+      Here is the text we want to scroll
       <q-input
         v-model="text"
         class="full-width full-height"
@@ -54,7 +54,7 @@ export default {
     textDivHeight () {
       return this.$refs.text.clientHeight
     },
-    animateDurationBasedOnTextHeight () {
+    animationDurationTextHeight () {
       return this.$refs.text.clientHeight * 15
     }
   },
@@ -64,7 +64,7 @@ export default {
       { transform: 'translateY(500px)' },
       { transform: `translateY(-${this.textDivHeight}px)` }
     ], {
-      duration: this.animateDurationBasedOnTextHeight
+      duration: this.animationDurationTextHeight
     });
     this.animate.pause()
     this.animate.onfinish = () => this.scrolling = false
