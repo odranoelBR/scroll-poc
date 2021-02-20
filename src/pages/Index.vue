@@ -25,9 +25,8 @@
       <div
         ref="text"
         class="text-white text"
-      >
-        {{text}}
-      </div>
+        v-html="text"
+      />
 
     </div>
   </q-page>
@@ -42,7 +41,6 @@ export default {
     return {
       text,
       scrolling: false,
-      duration: 5,
       animate: null
     }
   },
@@ -52,16 +50,21 @@ export default {
     },
     btnColor () {
       return this.scrolling ? 'negative' : 'primary'
+    },
+    textDivHeight () {
+      return this.$refs.text.clientHeight
+    },
+    animateDurationBasedOnTextHeight () {
+      return this.$refs.text.clientHeight * 15
     }
   },
   mounted () {
     this.animate = this.$refs.text.animate([
       // keyframes
-      { transform: 'translateY(0px)' },
-      { transform: `translateY(-${this.$refs.text.clientHeight}px)` }
+      { transform: 'translateY(500px)' },
+      { transform: `translateY(-${this.textDivHeight}px)` }
     ], {
-      // timing options
-      duration: 5000
+      duration: this.animateDurationBasedOnTextHeight
     });
     this.animate.pause()
     this.animate.onfinish = () => this.scrolling = false
@@ -72,30 +75,32 @@ export default {
         this.animate.pause()
         this.scrolling = false
       } else {
-        this.scrolling = true
         this.animate.play()
+        this.scrolling = true
       }
     },
     upSpeed () {
-      this.animate.updatePlaybackRate(this.animate.playbackRate += 0.2)
+      if (this.animate.playbackRate < 3) {
+        this.animate.updatePlaybackRate(this.animate.playbackRate += 0.05)
+      }
     },
     downSpeed () {
       if (this.animate.playbackRate > 0.4) {
-        this.animate.updatePlaybackRate(this.animate.playbackRate -= 0.2)
+        this.animate.updatePlaybackRate(this.animate.playbackRate -= 0.1)
       }
-
     }
   }
 }
 </script>
-<style scoped>
+<style >
 .text {
-  font-size: 2rem;
-  position: relative;
-  overflow: hidden;
-  bottom: -460px;
+  font-size: 4rem;
+  animation-fill-mode: both;
+  z-index: 1;
+  will-change: scroll-position;
 }
 .text-container {
   height: 450px;
+  overflow: hidden;
 }
 </style>
