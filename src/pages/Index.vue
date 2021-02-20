@@ -1,5 +1,9 @@
 <template>
-  <q-page class="q-pa-lg">
+  <q-page
+    class="q-pa-lg"
+    @keydown.prevent.38="upSpeed"
+    @keydown.prevent.40="downSpeed"
+  >
     <div class="row full-width q-col-gutter-md justify-center">
       here is the text we want to scroll
       <q-input
@@ -11,28 +15,20 @@
     </div>
     <div class="row q-mt-xl justify-center">
       <q-btn
-        color="primary"
         size="lg"
-        label="start scrolling"
+        :color="btnColor"
+        :label="btnName"
         @click="startScrolling"
       />
     </div>
-    <div class="row q-mt-xl justify-center text-white">
-      <q-scroll-area
-        dark
-        class="bg-dark text-white rounded-borders"
-        style="height: 200px; max-width: 300px;"
+    <div class="row q-mt-xl justify-center bg-black">
+      <div
+        ref="text"
+        class="text-white text"
       >
-        <div
-          v-for="n in 100"
-          :key="n"
-          class="q-py-sm q-px-md"
-        >
-          Lorem ipsum dolor sit amet, consectetur adipisicing
-          elit, sed do eiusmod tempor incididunt ut labore et
-          dolore magna aliqua.
-        </div>
-      </q-scroll-area>
+        {{text}}
+      </div>
+
     </div>
   </q-page>
 </template>
@@ -45,32 +41,59 @@ export default {
   data () {
     return {
       text,
-      scrolling: null
+      scrolling: false,
+      duration: 5,
+      animate: null
     }
   },
-  methods: {
-    getYpos () {
-      var ypos = this.$refs.text.offsetTop;
-      var thisNode = this.$refs.text;
-      while (thisNode.offsetParent && (thisNode.offsetParent != document.body)) {
-        thisNode = thisNode.offsetParent;
-        ypos += 0.5;
-      }
-      return ypos;
+  computed: {
+    btnName () {
+      return this.scrolling ? 'Stop scrolling' : 'Start scrolling'
     },
+    btnColor () {
+      return this.scrolling ? 'negative' : 'primary'
+    }
+  },
+  mounted () {
+    this.animate = this.$refs.text.animate([
+      // keyframes
+      { transform: 'translateY(0px)' },
+      { transform: 'translateY(-400px)' }
+    ], {
+      // timing options
+      duration: 5000
+    });
+    this.animate.pause()
+    this.animate.onfinish = () => this.scrolling = false
+  },
+  methods: {
     startScrolling () {
       if (this.scrolling) {
-        window.clearTimeout(this.scrolling);
-        this.scrolling = null;
+        this.animate.pause()
+        this.scrolling = false
       } else {
-        this.doScroll();
+        this.scrolling = true
+        this.animate.play()
       }
     },
-    doScroll () {
-      var y = parseInt(this.getYpos());
-      this.styleTopNumber = y
-      this.scrolling = window.setTimeout(this.doScroll, 200)
+    upSpeed () {
+      this.animate.updatePlaybackRate(this.animate.playbackRate += 0.2)
     },
+    downSpeed () {
+      if (this.animate.playbackRate > 0.4) {
+        this.animate.updatePlaybackRate(this.animate.playbackRate -= 0.2)
+      }
+
+    }
   }
 }
 </script>
+<style scoped>
+.text {
+  font-size: 2rem;
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  bottom: -410px;
+}
+</style>
