@@ -21,7 +21,7 @@
         @click="startScrolling"
       />
     </div>
-    <div class="row q-mt-xl justify-center bg-black">
+    <div class="row q-mt-xl justify-center bg-black text-container">
       <div
         ref="text"
         class="text-white text"
@@ -58,7 +58,7 @@ export default {
     this.animate = this.$refs.text.animate([
       // keyframes
       { transform: 'translateY(0px)' },
-      { transform: 'translateY(-400px)' }
+      { transform: `translateY(-${this.$refs.text.clientHeight}px)` }
     ], {
       // timing options
       duration: 5000
@@ -92,8 +92,10 @@ export default {
 .text {
   font-size: 2rem;
   position: relative;
-  height: 400px;
   overflow: hidden;
-  bottom: -410px;
+  bottom: -460px;
+}
+.text-container {
+  height: 450px;
 }
 </style>
