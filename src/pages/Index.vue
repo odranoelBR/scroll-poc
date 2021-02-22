@@ -60,7 +60,7 @@ export default {
   },
   mounted () {
     this.animate = gsap.fromTo(this.$refs.text,
-      { y: '270px', ease: 'none' },
+      { y: '440px', ease: 'none' },
       { y: `-${this.textDivHeight}px`, duration: this.animationDurationTextHeight, ease: 'none' },
     );
     this.animate.pause()
