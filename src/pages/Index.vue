@@ -27,13 +27,13 @@
         class="text-white text"
         v-html="text"
       />
-
     </div>
   </q-page>
 </template>
 
 <script>
 import text from '../assets/text.js'
+import { gsap } from "gsap";
 
 export default {
   name: 'PageIndex',
@@ -55,19 +55,16 @@ export default {
       return this.$refs.text.clientHeight
     },
     animationDurationTextHeight () {
-      return this.$refs.text.clientHeight * 15
+      return this.$refs.text.clientHeight / 20
     }
   },
   mounted () {
-    this.animate = this.$refs.text.animate([
-      // keyframes
-      { transform: 'translateY(500px)' },
-      { transform: `translateY(-${this.textDivHeight}px)` }
-    ], {
-      duration: this.animationDurationTextHeight
-    });
+    this.animate = gsap.fromTo(this.$refs.text,
+      { y: '440px', ease: 'none' },
+      { y: `-${this.textDivHeight}px`, duration: this.animationDurationTextHeight, ease: 'none' },
+    );
     this.animate.pause()
-    this.animate.onfinish = () => this.scrolling = false
+    this.animate.onComplete = () => this.scrolling = false
   },
   methods: {
     startScrolling () {
@@ -75,19 +72,18 @@ export default {
         this.animate.pause()
         this.scrolling = false
       } else {
-        this.animate.play()
+        this.animate.resume()
         this.scrolling = true
       }
     },
     upSpeed () {
-      if (this.animate.playbackRate < 3) {
-        this.animate.updatePlaybackRate(this.animate.playbackRate += 0.05)
-      }
+      this.animate.timeScale(this.animate.timeScale() + 0.1)
     },
     downSpeed () {
-      if (this.animate.playbackRate > 0.4) {
-        this.animate.updatePlaybackRate(this.animate.playbackRate -= 0.1)
+      if (this.animate.timeScale() > 0.5) {
+        this.animate.timeScale(this.animate.timeScale() - 0.1)
       }
+
     }
   }
 }
@@ -95,9 +91,6 @@ export default {
 <style >
 .text {
   font-size: 4rem;
-  animation-fill-mode: both;
-  z-index: 1;
-  will-change: scroll-position;
 }
 .text-container {
   height: 450px;
